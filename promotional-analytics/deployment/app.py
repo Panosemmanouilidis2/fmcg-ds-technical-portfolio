@@ -69,7 +69,6 @@ MODEL_FEATURES = [
     'ShipmentEndDate_Month','ShipmentEndDate_Week',
 ]
 
-# Prefixes used to identify one-hot encoded columns during inference
 ONE_HOT_PREFIXES = [
     'Customer_','PromotionStatus_','DivisionName_VG_',
     'PromoMechanic_','PromoFeature_','CategoryName_VG_'
@@ -77,8 +76,8 @@ ONE_HOT_PREFIXES = [
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PLAIN ENGLISH MAPPINGS
-# Maps user-friendly UI labels to the internal feature values expected by the model.
-# Allows non-technical planners to use the interface without knowing column names.
+# Keys = what the planner sees in the UI (generic, no client names)
+# Values = internal model feature names (must match training exactly)
 # ══════════════════════════════════════════════════════════════════════════════
 MECHANIC_LABELS = {
     "Temporary Price Reduction":  "TPR",
@@ -87,38 +86,39 @@ MECHANIC_LABELS = {
     "Loyalty Card Promotion":     "Loyalty",
     "Special Pack Offer":         "Special Packs / Offer",
     "Shopper Marketing Event":    "Shopper Marketing",
-    "Pipeline Fill":              "Pipe Fill",
+    "Stock Loading":              "Pipe Fill",
     "Other Promotion":            "Other",
 }
 FEATURE_LABELS = {
     "No Feature Display":       "None Specified",
-    "Gondola End Display":      "Gondola End",
-    "Checkout End Display":     "Check out end",
+    "End of Aisle Display":     "Gondola End",
+    "Checkout Display":         "Check out end",
     "Pallet Display":           "Pallet Drop",
-    "Shelf Display":            "Shelf",
-    "Mid-Gondola Display":      "Mid Gondola",
+    "Shelf":                    "Shelf",
+    "Mid Aisle Display":        "Mid Gondola",
     "Store Entrance Display":   "Store Entrance",
     "Shipper Display":          "Shipper/OFD",
     "Free Standing Unit":       "Free Standing Unit",
     "Hot Spot Display":         "Hot Spot",
-    "Online Promotion":         "Online",
+    "Online":                   "Online",
     "In-Store Event":           "Event",
     "Side Stack Display":       "Side Stack",
     "Plinth Display":           "Plinth",
     "Ladder Rack":              "Ladder Rack",
     "Queue Fixture":            "In queue fixture",
 }
+# UI shows fictional retailer names — values map to model's internal feature names
 CUSTOMER_LABELS = {
-    "Tesco":         "TESCO STORES LTD",
-    "Sainsbury's":   "SAINSBURYS SUPERMARKETS LTD",
-    "Asda":          "ASDA STORES LTD.",
-    "Morrisons":     "WM MORRISON SUPERMARKETS LIMITED",
-    "Waitrose":      "WAITROSE LTD",
-    "Boots":         "BOOTS UK LIMITED",
-    "Home Bargains": "T J MORRIS LTD",
+    "TopChoice Supermarkets":    "TESCO STORES LTD",
+    "GreenLeaf Supermarkets":    "SAINSBURYS SUPERMARKETS LTD",
+    "ValueMart Stores":          "ASDA STORES LTD.",
+    "NorthernMart Supermarkets": "WM MORRISON SUPERMARKETS LIMITED",
+    "FineFood Retail":           "WAITROSE LTD",
+    "HealthFirst Pharmacy":      "BOOTS UK LIMITED",
+    "BudgetHome Stores":         "T J MORRIS LTD",
 }
 DIVISION_LABELS = {
-    "Home & Personal Care": "HPC CATEGORY",
+    "Personal Care & Home": "HPC CATEGORY",
     "Food & Beverage":      "FOODS CATEGORY",
 }
 CATEGORY_LABELS = {
@@ -147,45 +147,37 @@ MONTH_TO_WEEK = {
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MODEL LOADER — Vertex AI endpoint
-# Replace the endpoint path below with your own Vertex AI endpoint resource name.
-# Format: projects/YOUR_PROJECT_ID/locations/YOUR_REGION/endpoints/YOUR_ENDPOINT_ID
+# ── HOW TO UPDATE AFTER REDEPLOYMENT ──────────────────────────────────────
+# 1. Run notebook 03_model_training.ipynb on Vertex AI Workbench
+# 2. Copy the new endpoint resource name from the output
+# 3. Replace ENDPOINT_PATH below with the new value
+# 4. Rebuild Docker image and push to Cloud Run (see deploy.py)
 # ══════════════════════════════════════════════════════════════════════════════
 ENDPOINT_PATH = (
-    "projects/YOUR_PROJECT_ID/locations/YOUR_REGION/endpoints/YOUR_ENDPOINT_ID"
+    "projects/128825737789/locations/europe-west2/endpoints/7639391396624859136"
 )
+GCP_PROJECT = "unilever-promo-ml"
+GCP_REGION  = "europe-west2"
 
 @st.cache_resource
 def load_resources():
     """
-    Initialises the Vertex AI client and loads supporting artefacts:
-    - Live prediction endpoint (XGBoost model served via Vertex AI)
-    - Feature median values (used to fill unspecified inputs at inference time)
-    - Scaling group definitions (used to proportionally adjust related financial features)
+    Initialises the Vertex AI client and loads supporting artefacts.
+    Cached so it only runs once per session.
     """
     from google.cloud import aiplatform
-    aiplatform.init(project="YOUR_GCP_PROJECT_ID", location="YOUR_REGION")
+    aiplatform.init(project=GCP_PROJECT, location=GCP_REGION)
     endpoint = aiplatform.Endpoint(ENDPOINT_PATH)
-    feature_names = MODEL_FEATURES
-    with open("models/feature_medians.json") as f:
+    with open("models/feature_medians_uk.json") as f:
         medians = json.load(f)
-    with open("models/scaling_groups.json") as f:
+    with open("models/scaling_groups_uk.json") as f:
         scaling = json.load(f)
-    return endpoint, feature_names, medians, scaling
+    return endpoint, MODEL_FEATURES, medians, scaling
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PREDICTION
-# Constructs the full 97-feature input vector from planner inputs,
-# calls the Vertex AI endpoint, and derives business metrics from the prediction.
 # ══════════════════════════════════════════════════════════════════════════════
 def predict(c, endpoint, feature_names, medians, scaling):
-    """
-    Builds the feature vector, calls the live Vertex AI endpoint,
-    and returns predicted volume plus derived business metrics:
-    - Uplift vs baseline (units and %)
-    - Estimated incremental gross profit (iGP)
-    - Return on investment (ROI)
-    - Cost per predicted unit
-    """
     pv  = float(c["planned_volume"])
     bv  = float(c["baseline_volume"])
     sp  = float(c["planned_spend"])
@@ -193,10 +185,8 @@ def predict(c, endpoint, feature_names, medians, scaling):
     mw  = MONTH_TO_WEEK[c["start_month"]]
     mn  = list(MONTH_TO_WEEK.keys()).index(c["start_month"]) + 1
 
-    # Start from median feature values — ensures all 97 features are populated
     row = {col: float(medians.get(col, 0.0)) for col in feature_names}
 
-    # Scale financial features proportionally to planned and baseline volumes
     pv_ratio = pv / max(float(scaling["median_planned_volume"]), 1)
     bv_ratio = bv / max(float(scaling["median_baseline_volume"]), 1)
     for col in scaling["promo_volume_cols"]:
@@ -204,7 +194,6 @@ def predict(c, endpoint, feature_names, medians, scaling):
     for col in scaling["baseline_volume_cols"]:
         if col in row: row[col] = float(medians.get(col, 0.0)) * bv_ratio
 
-    # Set core planned financial features directly from planner inputs
     row["PlannedPromoSalesVolumeSellIn"] = pv
     row["PlannedBaselineVolume"]         = bv
     row["PlannedIncrementalVolume"]      = pv - bv
@@ -221,13 +210,10 @@ def predict(c, endpoint, feature_names, medians, scaling):
     row["InstoreEndDate_Month"]          = mn
     row["InstoreEndDate_Week"]           = mw + dur
 
-    # Reset all one-hot columns to zero before setting the selected values
     for col in feature_names:
         if any(col.startswith(p) for p in ONE_HOT_PREFIXES):
             row[col] = 0.0
     row["PromotionStatus_Executed"] = 1.0
-
-    # Set the one-hot flag for each selected categorical dimension
     for col_key, prefix in [
         ("customer_code", "Customer_"),
         ("division_code", "DivisionName_VG_"),
@@ -238,18 +224,14 @@ def predict(c, endpoint, feature_names, medians, scaling):
         col_name = prefix + c[col_key]
         if col_name in row: row[col_name] = 1.0
 
-    # Send ordered feature list to Vertex AI endpoint and retrieve log-scale prediction
     payload  = [float(row[col]) for col in feature_names]
     response = endpoint.predict(instances=[payload])
     log_pred = float(response.predictions[0])
-
-    # Model was trained on log1p(volume) — inverse transform to recover unit volume
     pred_vol = max(float(np.expm1(log_pred)), 0)
 
-    # Derive business metrics from predicted volume
     uplift     = pred_vol - bv
     uplift_pct = (uplift / max(bv, 1)) * 100
-    igp        = (pred_vol - bv) * 2.75 * 0.35   # incremental gross profit estimate
+    igp        = (pred_vol - bv) * 2.75 * 0.35
     roi        = (igp - sp) / max(sp, 1)
 
     return {
@@ -262,8 +244,6 @@ def predict(c, endpoint, feature_names, medians, scaling):
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CAMPAIGN FORM
-# Renders a single campaign input form for the planner.
-# All inputs use plain English labels mapped internally to model feature values.
 # ══════════════════════════════════════════════════════════════════════════════
 def campaign_form(idx):
     st.markdown(f"### Campaign {idx}")
@@ -296,7 +276,6 @@ def campaign_form(idx):
 
 # ══════════════════════════════════════════════════════════════════════════════
 # RESULT CARD
-# Renders a forecast result card for a single campaign.
 # ══════════════════════════════════════════════════════════════════════════════
 def result_card(c, r, is_winner=False):
     sign = "+" if r["uplift_units"] >= 0 else ""
