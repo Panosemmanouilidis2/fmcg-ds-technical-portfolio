@@ -125,17 +125,19 @@ A global FMCG manufacturer running thousands of trade promotions annually across
 Streamlit interface on Cloud Run allows trade planners to:
 
 - Input promotion parameters in plain English — no technical knowledge required
-- Compare campaigns across different retailers, mechanics and months
+- Compare campaigns across multiple retailers, mechanics, months and categories simultaneously
 - Identify the highest-ROI promotion from a mixed portfolio before committing spend
 - Receive predicted sell-out volume, uplift %, and ROI estimate per campaign
-- Optimise trade investment allocation across retailer and mechanic combinations
+- Optimise trade investment allocation by selecting the best retailer and mechanic combination across the full portfolio
 - Download full results as CSV for further analysis
 
-> **Demo note:** The live app uses a synthetic dataset and supports comparison of
-> up to 4 campaigns simultaneously. In the original production deployment, predicted
-> volumes were in the thousands to hundreds of thousands of units per promotion.
-> The synthetic demo data has a compressed scale — the methodology, model
-> architecture, and deployment are identical to the production system (R² 0.81, Market A).
+> **Demo note:** The live app uses a synthetic dataset. For demonstration purposes
+> campaign comparison is restricted to up to 4 campaigns simultaneously. In the
+> original production deployment, planners could select across all retailers per
+> market to optimise the full trade portfolio. Predicted volumes were in the
+> thousands to hundreds of thousands of units per promotion — the synthetic demo
+> data has a compressed scale. The methodology, model architecture, and deployment
+> are identical to the production system (R² 0.81, Market A).
 
 ---
 
