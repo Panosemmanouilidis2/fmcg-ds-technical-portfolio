@@ -7,7 +7,7 @@
 
 ## Project: Promotional Analytics — Sell-Out Forecasting & Trade ROI Optimisation
 
-End-to-end ML pipeline for promotional sell-out forecasting and trade ROI optimisation across Western Europe and Southeast Asia retail markets. Built on 640K+ promotional event records. Models deployed as live endpoints on GCP Vertex AI.
+End-to-end ML pipeline for promotional sell-out forecasting and trade ROI optimisation across Western Europe and Asia retail markets. Built on 700K+ promotional event records. Models deployed as live endpoints on GCP Vertex AI.
 
 **Experience and data are real. Select details anonymised for confidentiality. Data synthetically reproduced for portfolio purposes.**
 
@@ -60,7 +60,7 @@ fmcg-ds-technical-portfolio/
 
 ## Model Performance
 
-| Metric | Market A (Western Europe) | Market B (Southeast Asia) |
+| Metric | Market A (Western Europe) | Market B (Asia) |
 |--------|--------------------------|--------------------------|
 | Model | XGBoost (tuned) | XGBoost (conservative) |
 | R² | **0.81** | **0.70** |
