@@ -74,7 +74,7 @@ fmcg-ds-technical-portfolio/
 ## Technical Summary
 
 ### Data & Feature Engineering
-- 640K+ promotional records cleaned and validated across two structurally different markets
+- 700K+ promotional records cleaned and validated across two structurally different markets
 - 15+ derived features from planned financial structure: incremental volume, uplift rate, cost per unit, ROI proxy, promo duration
 - Strict leakage controls — all features use only pre-execution planned data
 - Resolved: unit mismatches, decimal date formats, zero-plan rows, negative actuals, systematic data entry errors
