@@ -9,7 +9,7 @@
 
 End-to-end ML pipeline for promotional sell-out forecasting and trade ROI optimisation across two retail markets. Built on 700K+ promotional event records. Models deployed as live endpoints on GCP Vertex AI.
 
-**Experience and methodology are real. Select details anonymised for confidentiality. Data synthetically reproduced for portfolio purposes.**
+**Experience and methodology are real. Selected details anonymised for confidentiality. Data synthetically reproduced for portfolio purposes.**
 
 ▶ **[Live Streamlit Forecaster App](https://unilever-promo-forecaster-128825737789.europe-west2.run.app)**
 
