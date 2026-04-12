@@ -103,13 +103,18 @@ Western Europe XGBoost              Southeast Asia XGBoost
 - `objective_configs` as dict `{deployed_model_id: ObjectiveConfig}` — list raises `AttributeError`
 - Application Default Credentials (ADC) — no hardcoded credential paths
 - Model serialised as Booster JSON — required by Vertex AI pre-built XGBoost container
-
 ### 5. Planner Application
 Streamlit interface on Cloud Run allows trade planners to:
 - Input promotion parameters in plain English (no technical knowledge required)
 - Compare up to 4 campaigns side by side
 - Receive predicted sell-out volume, uplift %, and ROI estimate before committing spend
 - Download results as CSV
+
+> **Demo note:** The live app uses a synthetic dataset for demonstration purposes.
+> In the original production deployment, predicted volumes were in the thousands to
+> hundreds of thousands of units per promotion. The synthetic demo data has a
+> compressed scale — the methodology, model architecture, and deployment are identical
+> to the production system (R² 0.81, Western Europe market).
 
 ---
 
