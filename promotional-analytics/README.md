@@ -1,6 +1,6 @@
 # Promotional Analytics — Sell-Out Forecasting & Trade ROI Optimisation
 
-**Markets:** Western Europe · Southeast Asia  
+**Markets:** Western Europe · Asia  
 **Models:** XGBoost · R² 0.81 (Western Europe) · R² 0.70 (Southeast Asia)  
 **Deployment:** GCP Vertex AI · Cloud Run · Streamlit  
 **Data:** 640K+ promotional events (synthetic sample provided)
