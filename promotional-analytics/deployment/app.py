@@ -9,6 +9,9 @@ before committing trade spend — no technical skills required.
 
 Author: Panos Emmanouilidis
 """
+# NOTE: Vertex AI endpoint decommissioned after portfolio review period.
+# Screenshots of live app output available in /results folder.
+# To redeploy: see deploy.py and update ENDPOINT_PATH with new endpoint ID.
 
 import json
 import os
