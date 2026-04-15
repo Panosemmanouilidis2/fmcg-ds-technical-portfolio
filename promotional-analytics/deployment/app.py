@@ -160,9 +160,11 @@ def load_resources():
     booster = xgb.Booster()
     booster.load_model(LOCAL_MODEL)
 
-    with open("models/feature_medians_uk.json") as f:
+    bucket.blob("models/feature_medians_uk.json").download_to_filename("/tmp/feature_medians_uk.json")
+    with open("/tmp/feature_medians_uk.json") as f:
         medians = json.load(f)
-    with open("models/scaling_groups_uk.json") as f:
+    bucket.blob("models/scaling_groups_uk.json").download_to_filename("/tmp/scaling_groups_uk.json")
+    with open("/tmp/scaling_groups_uk.json") as f:
         scaling = json.load(f)
     return booster, MODEL_FEATURES, medians, scaling
 
