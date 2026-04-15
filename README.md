@@ -122,6 +122,14 @@ fmcg-ds-technical-portfolio/
 
 ---
 
+## Live Demo
+[Launch App](https://unilever-promo-forecaster-128825737789.europe-west2.run.app)
+
+FMCG Promotion Forecaster — compare up to 4 promotional campaigns side-by-side.
+Predicts sell-out volume and ROI using XGBoost (R²=0.81), 
+deployed on Google Cloud Run with model artifacts loaded from GCS.
+
+
 ## Data & Confidentiality Notice
 
 Developed against live commercial data for a global FMCG manufacturer across two markets. Client identity, retail customer names, and raw datasets are not disclosed. All data in this repository is synthetically generated to preserve statistical properties of the original. Planning accuracy biases, ROI distributions, and mechanic performance rankings reflect real analytical findings. Methodology, deployment architecture, and business outcomes are genuine.
