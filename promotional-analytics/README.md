@@ -1,11 +1,11 @@
 # Promotional Analytics — Sell-Out Forecasting & Trade ROI Optimisation
 
-**Markets:** Market A (Europe) · Market B (Asia)  
-**Models:** XGBoost · R² 0.81 (Market A) · R² 0.70 (Market B)  
-**Deployment:** GCP Vertex AI · Cloud Run · Streamlit  
-Note: Production models run on Vertex AI within the client environment. 
-Portfolio app uses sanitised model artifacts via GCS on a separate GCP project.
+**Markets:** Market A (Europe) · Market B (Asia)
+**Models:** XGBoost · R² 0.81 (Market A) · R² 0.70 (Market B)
+**Deployment:** GCP Vertex AI · Cloud Run · Streamlit
 **Data:** 700K+ promotional events (synthetic sample provided)
+
+> Production models run on Vertex AI within the client environment. Portfolio app uses sanitised model artifacts via GCS on a separate GCP project.
 
 ▶ **[Live Streamlit Forecaster App](https://unilever-promo-forecaster-128825737789.europe-west2.run.app)**
 
