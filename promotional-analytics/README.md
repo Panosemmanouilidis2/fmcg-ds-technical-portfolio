@@ -50,7 +50,7 @@ A global FMCG manufacturer running thousands of trade promotions annually across
 - **Live GCP Vertex AI deployment** — real-time forecasts via REST API endpoints
 - **Streamlit planner application on Cloud Run** — business-facing interface requiring no technical skills
 - **SHAP explainability layer** — identifies why a promotion is predicted to succeed or fail
-- **Data quality resolution** — cleaned and validated 700K+ promotional records across two markets
+- **Data quality resolution** — cleaned and validated synthetically reproduced promotional data across two markets, preserving the statistical properties of the original 700K+ record dataset
 
 ---
 
@@ -104,7 +104,7 @@ A global FMCG manufacturer running thousands of trade promotions annually across
                           ▼
 ┌─────────────────────────────────────────────────────────────┐
 │               Vertex AI Model Registry                       │
-│     Versioned model artefacts · XGBoost 1.7.6 container     │
+│     Versioned model artefacts · XGBoost 3.2.0 container     │
 │                    Region: europe-west2                      │
 └─────────────────────────┬───────────────────────────────────┘
                           │
