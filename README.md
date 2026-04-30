@@ -7,7 +7,7 @@
 
 ## Project: Promotional Analytics — Sell-Out Forecasting & Trade ROI Optimisation
 
-End-to-end ML pipeline for promotional sell-out forecasting and trade ROI optimisation across two retail markets. Built on 700K+ promotional event records. Models deployed as live endpoints on GCP Vertex AI.
+End-to-end ML pipeline for promotional sell-out forecasting and trade ROI optimisation across two retail markets. Built on synthetically reproduced data preserving the statistical properties of the original 700K+ promotional event records. Models deployed as live endpoints on GCP Vertex AI.
 
 **Experience and methodology are real. Selected details anonymised for confidentiality. Data synthetically reproduced for portfolio purposes.**
 
@@ -46,7 +46,7 @@ Click any badge to open directly in Google Colab and run in your browser:
 ## Technical Summary
 
 ### Data & Feature Engineering
-- 700K+ promotional records cleaned and validated across two structurally different markets
+- Synthetically reproduced promotional data across two structurally different markets, preserving statistical properties of the original 700K+ record dataset
 - 15+ derived features from planned financial structure: incremental volume, uplift rate, cost per unit, ROI proxy, promo duration
 - Strict leakage controls — all features use only pre-execution planned data
 - Resolved: unit mismatches, decimal date formats, zero-plan rows, negative actuals, systematic data entry errors
@@ -126,9 +126,10 @@ fmcg-ds-technical-portfolio/
 [Launch App](https://unilever-promo-forecaster-128825737789.europe-west2.run.app)
 
 FMCG Promotion Forecaster — compare up to 4 promotional campaigns side-by-side.
-Predicts sell-out volume and ROI using XGBoost (R²=0.81), 
+Predicts sell-out volume and ROI using XGBoost (R²=0.81),
 deployed on Google Cloud Run with model artifacts loaded from GCS.
 
+---
 
 ## Data & Confidentiality Notice
 
